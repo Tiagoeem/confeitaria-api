@@ -18,13 +18,50 @@ class ControladorApp
         try {
             $dao = new BoloDAO();
             $bolosArray = $dao->getAllBolos();
+
             $corpoResp =  json_encode( array( "bolos" =>$bolosArray ) );
             $response = $response->withHeader('Content-type', 'application/json')
                                  ->write( $corpoResp );
         } catch ( \PDOException $e ) {
             $status = 500;
             $response->write('Exceção capturada: '.  $e->getMessage(). '\n');
-        }
+        } 
+        return $response->withStatus($status);
+    }
+
+    public function lerBolo( Request $request, Response $response, array $args )
+    {
+        $status = 200;
+
+        try {
+            $dao = new BoloDAO();
+            $bolosArray = $dao->getBoloById( $args["idBolo"] );
+
+            $corpoResp =  json_encode( $bolosArray );
+            $response = $response->withHeader('Content-type', 'application/json')
+                                 ->write( $corpoResp );
+        } catch ( \PDOException $e ) {
+            $status = 500;
+            $response->write('Exceção capturada: '.  $e->getMessage(). '\n');
+        } 
+        return $response->withStatus($status);
+    }
+
+    public function deletarBolo( Request $request, Response $response, array $args )
+    {
+        $status = 200;
+
+        try {
+            $dao = new BoloDAO();
+            $sucesso = $dao->deleteBoloById( $args["idBolo"] );
+
+            var_dump($sucesso);
+
+            $status = ( $sucesso ) ? $status = 200 : $status = 204;
+        } catch ( \PDOException $e ) {
+            $status = 500;
+            $response->write('Exceção capturada: '.  $e->getMessage(). '\n');
+        } 
         return $response->withStatus($status);
     }
 

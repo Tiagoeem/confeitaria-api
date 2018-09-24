@@ -16,8 +16,10 @@ class ConexaoDB {
 	function __construct() {
 		#Configure a conexão do banco aqui
 		$this->nomeServer = "localhost";
-		$this->usuario = "dml_user";
-		$this->senha = "senha_dml_user";
+		#$this->usuario = "dml_user";
+		#$this->senha = "senha_dml_user";
+		$this->usuario = "root";
+		$this->senha = "";
         $this->dataBase = "db_confeitaria";
         $this->charset = 'utf8mb4';
         $dsn = "mysql:host=$this->nomeServer;dbname=$this->dataBase;charset=$this->charset";

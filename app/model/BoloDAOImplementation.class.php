@@ -17,6 +17,7 @@ class BoloDAOImplementation implements BoloDAOInterface
         $stmt->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        var_dump($result);
         $arrayBolos = array();
         foreach ($result as $row) {
             $boloTemp = new Bolo( $row );
@@ -66,14 +67,18 @@ class BoloDAOImplementation implements BoloDAOInterface
         $stmt->execute();
     }
 
-    public function deleteBoloById( $idBolo )
+    public function deleteBoloById( $idBolo ):bool
     {
         # Pode lançar erro
         $connDB = new ConexaoDB();
         $stmt = $connDB->con->prepare("DELETE FROM tbl_bolos where id_bolo = :IDBOLO");
         $stmt->bindParam(":IDBOLO", $idBolo);
 
+        # TRUE: sucesso
+        # FALSE: Não existe registro com tal id_bolo
         $stmt->execute();
+        return ( $stmt->rowCount() >= 1 ) ;
+
     }
 
     public function updateBoloById( $idBolo, Bolo $boloInstancia )
