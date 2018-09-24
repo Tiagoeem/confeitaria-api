@@ -10,7 +10,7 @@ Interface BoloDAOInterface {
 
     public function getBoloByName( string $nome );
 
-    public function getBoloById( $idBolo ):Bolo;
+    public function getBoloById( $idBolo );
 
     public function createBolo( Bolo $boloInstancia );
 
