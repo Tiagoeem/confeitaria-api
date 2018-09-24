@@ -34,7 +34,7 @@ class ControladorApp
         $status = 200;
 
         try {
-
+            # Verifica o argumento que vem via URL
             if ( isset( $args["idBolo"]) ) {
                 if ( !is_numeric( $args["idBolo"] ) )
                     throw new BadHttpRequest();
@@ -65,8 +65,13 @@ class ControladorApp
         $status = 200;
 
         try {
-            if ( !isset( $args["idBolo"] ) )
-               throw new BadHttpRequest();
+            # Verifica o argumento que vem via URL
+            if ( isset( $args["idBolo"]) ) {
+                if ( !is_numeric( $args["idBolo"] ) )
+                    throw new BadHttpRequest();
+            } else { 
+                throw new BadHttpRequest();
+            }
 
             $dao = new BoloDAO();
             # TRUE: Deletou a tupla com o id requisitado => 200
@@ -85,22 +90,23 @@ class ControladorApp
 
     public function cadastrarBolo( Request $request, Response $response, array $args )
     {
-        # Verificar erro na entrada
-        # Esperamos uma entrada Json da seguinte forma:
-        # {"nome":"valor","sabor":"valor","cobertura":"valor","descricao":"valor"}
-        $objEntrada = $request->getParsedBody();
+
         $status = 201;
-
         try {
-            # getParsedBody, irá parsear o Json de entrada, caso ele falhe
-            # pela entrada não ser um Json válido, esse if irá capturar
-            if ( is_null($objEntrada) )
-                throw new BadHttpRequest();
-
             # Verifica se os campos obrigatórios estão preenchidos
             if (!( isset( $objEntrada["nome"] ) &&
             isset( $objEntrada["sabor"] ) &&
             isset( $objEntrada["cobertura"])))
+                throw new BadHttpRequest();
+
+            # Verificar erro na entrada
+            # Esperamos uma entrada Json da seguinte forma:
+            # {"nome":"valor","sabor":"valor","cobertura":"valor","descricao":"valor"}
+            $objEntrada = $request->getParsedBody();
+
+            # getParsedBody, irá parsear o Json de entrada, caso ele falhe
+            # pela entrada não ser um Json válido, esse if irá capturar
+            if ( is_null($objEntrada) )
                 throw new BadHttpRequest();
 
             # Descrição é opcional, então caso não tenha sido passada será substituida por ""
@@ -125,15 +131,27 @@ class ControladorApp
         return $response->withStatus($status);
     }
 
+    # Por simplificação será preciso enviar todos os valores e o update ocorrerá no objeto inteiro.
     public function updateBolo( Request $request, Response $response, array $args )
     {
-        # Verificar erro na entrada
-        # Esperamos uma entrada Json da seguinte forma:
-        # {"nome":"valor","sabor":"valor","cobertura":"valor","descricao":"valor"}
-        $objEntrada = $request->getParsedBody();
-        $status = 201;
+
+        $status = 200;
 
         try {
+
+            # Verifica o argumento que vem via URL
+            if ( isset( $args["idBolo"]) ) {
+                if ( !is_numeric( $args["idBolo"] ) )
+                    throw new BadHttpRequest();
+            } else { 
+                throw new BadHttpRequest();
+            }
+
+            # Verificar erro na entrada
+            # Esperamos uma entrada Json da seguinte forma:
+            # {"nome":"valor","sabor":"valor","cobertura":"valor","descricao":"valor"}
+            $objEntrada = $request->getParsedBody();            
+
             # getParsedBody, irá parsear o Json de entrada, caso ele falhe
             # pela entrada não ser um Json válido, esse if irá capturar
             if ( is_null($objEntrada) )
@@ -155,7 +173,9 @@ class ControladorApp
 
             $boloInst = new Bolo($arrayBolo);
             $dao = new BoloDAO();
-            $dao->updateBolo( 1 , $boloInst );
+            $sucesso = $dao->updateBoloById( $args["idBolo"]  , $boloInst );
+            $status = ( $sucesso ) ? 200 : 204;
+
         } catch (BadHttpRequest $e) {
             $status = 400;
             $response->write('Exceção capturada: '.  $e->getMessage(). '\n');

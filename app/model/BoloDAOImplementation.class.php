@@ -89,11 +89,15 @@ class BoloDAOImplementation implements BoloDAOInterface
         $stmt = $connDB->con->prepare("UPDATE tbl_bolos SET nome = :NOME, sabor = :SABOR, cobertura = :COBERTURA, descricao =:DESCRICAO
                                     WHERE id_bolo = $idBolo");
 
-        $stmt->bindParam(":NOME", $boloInstancia->getNome());
-        $stmt->bindParam(":SABOR", $boloInstancia->getSabor());
-        $stmt->bindParam(":COBERTURA", $boloInstancia->getCobertura());
-        $stmt->bindParam(":DESCRICAO", $boloInstancia->getDescricao());
+        $stmt->bindParam(":NOME", $nome);
+        $stmt->bindParam(":SABOR", $sabor);
+        $stmt->bindParam(":COBERTURA", $cobertura);
+        $stmt->bindParam(":DESCRICAO", $desc);
 
+        $nome = $boloInstancia->getNome();
+        $sabor = $boloInstancia->getSabor();
+        $cobertura = $boloInstancia->getCobertura();
+        $desc = $boloInstancia->getDescricao();
         # TRUE: sucesso
         # FALSE: Não existe registro com tal id_bolo
         $stmt->execute();

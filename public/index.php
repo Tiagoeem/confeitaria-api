@@ -45,6 +45,12 @@ $app->group('/v1',function ( ) {
         return $controlador->deletarBolo($request, $response, $args);
     });
 
+    $this->put('/bolo/{idBolo}', function (Request $request, Response $response, array $args) {
+        $controlador = new ControladorApp();
+        return $controlador->updateBolo($request, $response, $args);
+    });
+
+
     $this->get('/hello/{name}', function (Request $request, Response $response, array $args) {
     
         #$boloDAO = new BoloDAO();
